@@ -5,10 +5,27 @@
 # chenyun120@126.com
 # 脚本同.xcodeproj 与同级目录下  
 
-echo "查看是否存在ipa和Payload文件夹"
-
 myIpa=~/ipa
 myPayload=~/ipa/Payload
+
+pgyerUKey='这里替换蒲公英ukey'  # 这里替换蒲公英ukey
+pgyerApiKey='这里替换蒲公英apiKey' # 这里替换蒲公英apiKey
+
+echo "1. fir"
+echo "2. pgyer"
+printf "选择上传地点, 输入数字:"
+read isPgyer
+
+# ============= 实现fir后  删除这代码
+
+if [ $isPgyer != 2 ]; then
+	echo "功能未实现"
+	exit
+fi
+
+# ==============
+
+echo "查看是否存在ipa和Payload文件夹"
 
 if [ ! -x "$myIpa" ]; then
 echo "不存在ipa文件夹，开始创建"
@@ -43,23 +60,41 @@ cd ~/ipa/
 echo "进入app所在路径"
 echo "打包成ipa"
 zip -r $paths.ipa *
+
+if [ $isPgyer == 2 ]; 
+then
 echo "打包成ipa完毕, 开始上传蒲公英"
-curl -F "file=@$paths.ipa" -F "uKey=这里替换蒲公英ukey" -F "_api_key=这里替换蒲公英apiKey" -F "publishRange=3" -F "isPublishToPublic=2" -F "password=123456" http://www.pgyer.com/apiv1/app/upload > ~/ipa/response.txt
+curl -F "file=@$paths.ipa" \
+	 -F "uKey=$pgyerUKey" \
+	 -F "_api_key=$pgyerApiKey" \
+	 -F "publishRange=3" \
+	 -F "isPublishToPublic=2" \
+	 -F "password=123456" \ 
+	 http://www.pgyer.com/apiv1/app/upload > ~/ipa/response.txt
+
 echo "开始上传完毕"
 
 echo "处理网络请求结果"
 
 varible=$(cat ~/ipa/response.txt)
-
 str=${varible##*appQRCodeURL}
-
-strTwo=${str%'"'*}
-
-strThree=${strTwo:3-start}
-
-endStr=${strThree##*'/'}
+str=${str%'"'*}
+str=${str:3-start}
+endStr=${str##*'/'}
 
 echo "打开网页"
 open http://www.pgyer.com/$endStr
 echo "已打开"
+
+else
+echo "打包成ipa完毕, 开始上传fir"
+curl -F "file=@$paths.ipa" \
+	 -F "Key=" \
+	 -F "token=a59ce75f51914a0b74d5a5d0d51fab25" \
+	 -F "x:name=$paths" \
+	 -F "x:version=1.0" \
+	 -F "x:build=test.com" \ 
+	 http://api.fir.im/upload_url > ~/ipa/response.txt
+fi
+
 open .
