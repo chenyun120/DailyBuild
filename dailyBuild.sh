@@ -85,7 +85,7 @@ else
 echo "打包成ipa完毕, 开始上传fir"
 curl -F "file=@$paths.ipa" \
 	 -F "Key=" \
-	 -F "token=a59ce75f51914a0b74d5a5d0d51fab25" \
+	 -F "token=" \
 	 -F "x:name=$paths" \
 	 -F "x:version=1.0" \
 	 -F "x:build=test.com" \ 
