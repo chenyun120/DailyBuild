@@ -64,13 +64,8 @@ zip -r $paths.ipa *
 if [ $isPgyer == 2 ]; 
 then
 echo "打包成ipa完毕, 开始上传蒲公英"
-curl -F "file=@$paths.ipa" \
-	 -F "uKey=$pgyerUKey" \
-	 -F "_api_key=$pgyerApiKey" \
-	 -F "publishRange=3" \
-	 -F "isPublishToPublic=2" \
-	 -F "password=123456" \ 
-	 http://www.pgyer.com/apiv1/app/upload > ~/ipa/response.txt
+# 蒲公英
+curl -F "file=@$paths.ipa" -F "uKey=$pgyerUKey" -F "_api_key=$pgyerApiKey" -F "publishRange=3" -F "isPublishToPublic=2" -F "password=123456" http://www.pgyer.com/apiv1/app/upload > ~/ipa/response.txt
 
 echo "开始上传完毕"
 
